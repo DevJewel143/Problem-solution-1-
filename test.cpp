@@ -1,47 +1,53 @@
-#include<bits/stdc++.h>
-using namespace std;
-#define Om ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+#include <stdio.h>
 
 int main()
 {
-    Om;
-    int t;
-    cin>>t;
-    while(t--)
+    int i, n, k, m;
+    int next[30], pre[30];
+    while(scanf("%d %d %d", &n, &k, &m) == 3)
     {
-        if(t)
-            cout<<endl;
-        string s;
-        cin>>s;
-        int k, i, j, m, n=s.size();
-        bool ok;
-        for(k=1; k<n; k++)
+        if(n == 0 && k == 0 && m == 0)
+            break;
+        for(i = 1; i <= n; i++)
+            next[i] = i+1, pre[i] = i-1;
+        next[n] = 1, pre[1] = n;
+        int idx1 = 1, idx2 = n, used[30] = {};
+        int flag = 0;
+        while(n)
         {
-            ok = true;
-            if(n%k)
-                ok = false;
-            for(i=1, m=k; i<n/k && n%k==0; i++)
+            for(i = 1; i < k; i++)
+                idx1 = next[idx1];
+            for(i = 1; i < m; i++)
+                idx2 = pre[idx2];
+            if(flag)
+                putchar(',');
+            flag = 1;
+            if(idx1 != idx2)
             {
-                for(j=0; j<k; j++,m++)
-                {
-                    if(s[m] != s[j])
-                    {
-                        ok = false;
-                            break;
-                    }
-                }
-                if(!ok)
-                    break;
+                printf("%3d%3d", idx1, idx2);
+                used[idx1] = used[idx2] = 1;
+                n -= 2;
+                next[pre[idx1]] = next[idx1];
+                pre[next[idx1]] = pre[idx1];
+                next[pre[idx2]] = next[idx2];
+                pre[next[idx2]] = pre[idx2];
             }
-            if(ok)
+            else
+            {
+                used[idx1] = 1;
+                printf("%3d", idx1);
+                next[pre[idx1]] = next[idx1];
+                pre[next[idx1]] = pre[idx1];
+                n--;
+            }
+            if(n == 0)
                 break;
+            while(used[idx1])
+                idx1 = next[idx1];
+            while(used[idx2])
+                idx2 = pre[idx2];
         }
-        cout<<k<<endl;
-        if(t)
-            cout<<endl;
+        puts("");
     }
-
     return 0;
 }
-
-
